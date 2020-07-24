@@ -20,11 +20,7 @@ services:
     image: "postgres:12"
     ports:
       - "3300:3300"
-    env_file: ".env"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: postgres
+    env_file: .env
 
 volumes:
   data_backend_libs:
