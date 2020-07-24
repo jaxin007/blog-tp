@@ -1,0 +1,31 @@
+{
+  "name": "blog-tp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "lint": "npx eslint ./src/**/*.js",
+    "lint:fix": "npx eslint ./src/**/*.js --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaxin007/blog-tp.git"
+  },
+  "author": "jaxin007",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaxin007/blog-tp/issues"
+  },
+  "homepage": "https://github.com/jaxin007/blog-tp#readme",
+  "dependencies": {
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "husky": "^4.2.5"
+  },
+  "husky": {
+    "hooks": {
+    }
+  }
+}
