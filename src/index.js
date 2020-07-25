@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { userService } = require('./services/index');
 require('express-async-errors');
 require('dotenv').config();
 
@@ -18,9 +19,25 @@ app.use((err, request, response, next) => {
   return next();
 });
 
-app.get('/home', (req, res) => {
-  res.json('Hello!').status(200)
-})
+app.get('/users', async (req, res) => {
+  const allUsers = await userService.getAllUsers();
+
+  return res.status(200).json(allUsers);
+});
+
+app.get('/user/:id', async (req, res) => {
+  const userId = +req.params.id;
+  const userById = await userService.getUserById(userId);
+
+  return res.status(200).json(userById);
+});
+
+app.post('/register', async (req, res) => {
+  const userData = req.body;
+  const createdUser = await userService.registerUser(userData);
+
+  return res.status(200).json(createdUser);
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);
