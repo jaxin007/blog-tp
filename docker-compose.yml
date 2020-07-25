@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  backend:
+    container_name: "blog-tp_backend"
+    build: .
+    volumes:
+      - ".:/app"
+      - "/app/node_modules"
+    ports:
+      - "3000:3000"
+    env_file: ".env"
+    environment:
+      - 'PGHOST=localhost'
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: "blog-tp-postgres"
+    image: "postgres:12"
+    ports:
+      - "3300:3300"
+    env_file: .env
+
+volumes:
+  data_backend_libs:
+    driver: local
