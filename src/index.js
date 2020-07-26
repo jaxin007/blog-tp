@@ -32,12 +32,32 @@ app.get('/user/:id', async (req, res) => {
   return res.status(200).json(userById);
 });
 
+app.get('/posts/:id', async (req, res) => {
+  const userId = +req.params.id;
+  try {
+    const postsByUserId = await userService.getPostsByUserId(userId);
+    return res.status(200).json(postsByUserId);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: err });
+  }
+});
+
 app.post('/register', async (req, res) => {
   const userData = req.body;
   const createdUser = await userService.registerUser(userData);
 
   return res.status(200).json(createdUser);
 });
+
+app.post('/post/:id', async (req, res) => {
+  const userId = +req.params.id;
+  const post = req.body.body;
+
+  const createdPost = await userService.createPost(post, userId);
+
+  return res.status(200).json(createdPost);
+})
 
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);

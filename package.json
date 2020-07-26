@@ -9,6 +9,7 @@
     "lint:fix": "npx eslint ./src/**/*.js --fix",
     "migrate": "npx knex migrate:latest",
     "docker:pg": "docker-compose up postgres",
+    "docker:touch-pg": "docker exec -it blog-tp-postgres psql -U postgres",
     "docker:down": "docker-compose down"
   },
   "repository": {

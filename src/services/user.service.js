@@ -32,10 +32,30 @@ class UserService {
     const userById = await this.postgresService
       .knex('users')
       .where('id', id)
+      .first()
       .returning('*');
 
     return userById;
   }
+
+  async createPost(body, userId) {
+    const createdPost = await this.postgresService
+      .knex('posts')
+      .insert({ body, author: userId })
+      .returning('*');
+
+    return createdPost;
+  }
+
+  async getPostsByUserId(userId) {
+    const postsById = await this.postgresService
+      .knex('posts')
+      .where('posts.author', userId)
+      .select();
+
+    return postsById;
+  }
+
 }
 
 module.exports = {
