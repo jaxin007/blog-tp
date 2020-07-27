@@ -9,10 +9,10 @@ exports.up = function (knex) {
     if (!exists) {
       return knex.schema.createTable('users', (table) => {
         table.increments('id').primary();
-        table.string('username', 100).notNullable();
+        table.string('username', 100).unique().notNullable();
         table.string('password', 100).notNullable();
         table.timestamp('created_at', { precision: 6 }).defaultTo(knex.fn.now(6));
-        table.string('role', 100).defaultTo('user');
+        table.integer('role', 100).defaultTo(0);
       });
     }
   });

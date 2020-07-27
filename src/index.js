@@ -44,10 +44,21 @@ app.get('/posts/:id', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-  const userData = req.body;
-  const createdUser = await userService.registerUser(userData);
+  const userName = req.body.username;
+  const userPassword = req.body.password;
 
-  return res.status(200).json(createdUser);
+  const userData = {
+    username: userName,
+    password: userPassword,
+  };
+
+  try {
+    const createdUser = await userService.registerUser(userData);
+
+    return res.status(200).json(createdUser);
+  } catch (err) {
+    return res.json(err.message);
+  }
 });
 
 app.post('/post/:id', async (req, res) => {
@@ -57,7 +68,7 @@ app.post('/post/:id', async (req, res) => {
   const createdPost = await userService.createPost(post, userId);
 
   return res.status(200).json(createdPost);
-})
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);

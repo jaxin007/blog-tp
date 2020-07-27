@@ -1,4 +1,5 @@
 const { PostgresService } = require('./index');
+const { hashPassword, checkPasswords } = require('../utils/bcrypt');
 
 class UserService {
   /**
@@ -9,14 +10,25 @@ class UserService {
   }
 
   async registerUser(user) {
-    const userData = { username: user.name, password: user.password };
+    const { username, password } = user;
 
-    const createdUser = await this.postgresService
-      .knex('users')
-      .insert(userData)
-      .returning('*');
+    const hashedPassword = await hashPassword(password);
 
-    return createdUser;
+    const userData = {
+      username,
+      password: hashedPassword,
+    };
+
+    try {
+      const createdUser = await this.postgresService
+        .knex('users')
+        .insert(userData)
+        .returning('*');
+
+      return createdUser;
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   async getAllUsers() {
@@ -48,14 +60,27 @@ class UserService {
   }
 
   async getPostsByUserId(userId) {
+    const userByPostId = await this.postgresService // get the user by post id
+      .knex('users')
+      .where('id', userId)
+      .first()
+      .returning('*');
+
     const postsById = await this.postgresService
       .knex('posts')
-      .where('posts.author', userId)
-      .select();
+      .where('author', userId)
+      .select()
+      .then((posts) => posts.map((value) => {
+        const postsByUserId = value;
+
+        postsByUserId.author = userByPostId; // replace author id by user info from users table
+        delete postsByUserId.author.password;
+
+        return postsByUserId;
+      }));
 
     return postsById;
   }
-
 }
 
 module.exports = {
