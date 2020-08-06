@@ -1,22 +1,23 @@
-/* eslint-disable no-shadow */
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-shadow,consistent-return,no-unused-vars */
 const knex = require('knex');
 
 /**
  * @param {knex} knex
  */
 exports.up = function (knex) {
-  return knex.schema.hasTable('users', (table) => {
-    table.increments('id').primary();
-    table.string('username', 100).notNullable();
-    table.string('password', 100).notNullable();
-    table.timestamp('created_at', { precision: 6 }).defaultTo(knex.fn.now(6));
+  return knex.schema.hasTable('users').then((exists) => {
+    if (!exists) {
+      return knex.schema.createTable('users', (table) => {
+        table.increments('id').primary();
+        table.string('username', 100).unique().notNullable();
+        table.string('password', 100).notNullable();
+        table.timestamp('created_at', { precision: 6 }).defaultTo(knex.fn.now(6));
+        table.integer('role', 100).defaultTo(0);
+      });
+    }
   });
 };
 
-/**
- * @param {knex} knex
- */
 exports.down = function (knex) {
   return knex.schema.dropTable('users');
 };
