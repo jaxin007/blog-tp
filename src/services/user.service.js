@@ -34,7 +34,7 @@ class UserService {
   async getAllUsers() {
     const allUsers = await this.postgresService
       .knex('users')
-      .select(['username', 'id', 'created_at'])
+      .select(['username', 'id', 'role', 'created_at'])
       .returning('*');
 
     return allUsers;
@@ -50,6 +50,15 @@ class UserService {
     return userById;
   }
 
+  async getUserByData(username) {
+    const userByData = await this.postgresService
+      .knex('users')
+      .where({ username })
+      .first();
+
+    return userByData;
+  }
+
   async createPost(body, userId) {
     const createdPost = await this.postgresService
       .knex('posts')
@@ -63,6 +72,7 @@ class UserService {
     const userByPostId = await this.postgresService // get the user by post id
       .knex('users')
       .where('id', userId)
+      .select(['id', 'username', 'role'])
       .first()
       .returning('*');
 
@@ -74,10 +84,13 @@ class UserService {
         const postsByUserId = value;
 
         postsByUserId.author = userByPostId; // replace author id by user info from users table
-        delete postsByUserId.author.password;
 
         return postsByUserId;
-      }));
+      }))
+      .then((posts) => {
+        posts.push({ author: userByPostId });
+        return posts;
+      });
 
     return postsById;
   }
